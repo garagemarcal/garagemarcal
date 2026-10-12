@@ -7,7 +7,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Saira:ital,wght@1,900&display=swap" rel="stylesheet">
 
 <style>
 *{
@@ -47,29 +47,31 @@ z-index:1;
 
 .logo{
 margin-bottom:30px;
-line-height:.9;
-font-weight:900;
+line-height:.82;
 text-transform:uppercase;
 user-select:none;
 }
 
 .logo span{
 display:block;
+font-family:Saira,sans-serif;
+font-style:italic;
+font-weight:900;
+font-size:68px;
+letter-spacing:-.01em;
+-webkit-background-clip:text;
+background-clip:text;
+-webkit-text-fill-color:transparent;
 }
 
 .logo .garage{
-font-size:56px;
-letter-spacing:.14em;
-margin-right:-.14em;
-color:#fff;
+background-image:linear-gradient(180deg,#fff 0%,#fff 45%,#b9bcc4 100%);
+filter:drop-shadow(0 2px 14px rgba(255,255,255,.18));
 }
 
 .logo .marcal{
-font-size:56px;
-letter-spacing:.14em;
-margin-right:-.14em;
-color:#e10600;
-text-shadow:0 0 28px rgba(225,6,0,.45);
+background-image:linear-gradient(180deg,#ff3b30 0%,#e10600 50%,#9e0400 100%);
+filter:drop-shadow(0 0 22px rgba(225,6,0,.5));
 }
 
 .info p{
@@ -157,7 +159,7 @@ font-size:12px;
 }
 
 @media (max-width:360px){
-.logo .garage,.logo .marcal{font-size:46px;}
+.logo span{font-size:56px;}
 .btn-highlight .btn-sub{white-space:normal;}
 }
 </style>
@@ -268,9 +270,77 @@ Siga-nos no TikTok
     particles.length = target;
   }
 
+  // --- Lightning ---
+  let bolts = [], nextBolt = 3 + Math.random() * 4;
+
+  // Midpoint displacement: jagged line between two points
+  function jag(x1, y1, x2, y2, spread, out) {
+    if (spread < 4) { out.push([x2, y2]); return; }
+    const mx = (x1 + x2) / 2 + (Math.random() - 0.5) * spread;
+    const my = (y1 + y2) / 2 + (Math.random() - 0.5) * spread * 0.3;
+    jag(x1, y1, mx, my, spread / 2, out);
+    jag(mx, my, x2, y2, spread / 2, out);
+  }
+
+  function createBolt() {
+    const x0 = w * (0.1 + Math.random() * 0.8);
+    const y1 = h * (0.35 + Math.random() * 0.4);
+    const x1 = x0 + (Math.random() - 0.5) * w * 0.3;
+    const main = [[x0, -10]];
+    jag(x0, -10, x1, y1, Math.min(w, h) * 0.25, main);
+
+    const paths = [{ pts: main, width: 1 }];
+    const branches = 2 + Math.floor(Math.random() * 3);
+    for (let i = 0; i < branches; i++) {
+      const start = main[Math.floor(main.length * (0.2 + Math.random() * 0.5))];
+      const len = h * (0.08 + Math.random() * 0.15);
+      const dir = Math.random() < 0.5 ? -1 : 1;
+      const pts = [start];
+      jag(start[0], start[1], start[0] + dir * len * 0.7, start[1] + len, len * 0.5, pts);
+      paths.push({ pts, width: 0.5 });
+    }
+    // flicker pattern: brightness per ~60ms step
+    const flicker = [1, 0.25, 0.9, 0.5, 0.75, 0.35, 0.2, 0.1];
+    return { paths, age: 0, life: flicker.length * 0.06, flicker };
+  }
+
+  function strokePath(pts) {
+    ctx.beginPath();
+    ctx.moveTo(pts[0][0], pts[0][1]);
+    for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);
+    ctx.stroke();
+  }
+
+  function drawBolts() {
+    let flash = 0;
+    ctx.lineCap = ctx.lineJoin = 'round';
+    for (const b of bolts) {
+      const a = b.flicker[Math.min(b.flicker.length - 1, Math.floor(b.age / 0.06))];
+      flash = Math.max(flash, a);
+      for (const p of b.paths) {
+        ctx.shadowColor = 'rgba(255,40,30,1)';
+        ctx.shadowBlur = 25;
+        ctx.strokeStyle = `rgba(255,60,50,${0.35 * a})`;
+        ctx.lineWidth = 7 * p.width;
+        strokePath(p.pts);
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = 'rgba(255,255,255,1)';
+        ctx.strokeStyle = `rgba(255,235,235,${0.95 * a})`;
+        ctx.lineWidth = 1.8 * p.width;
+        strokePath(p.pts);
+      }
+    }
+    ctx.shadowBlur = 0;
+    if (flash > 0) {
+      ctx.fillStyle = `rgba(255,220,220,${0.06 * flash})`;
+      ctx.fillRect(0, 0, w, h);
+    }
+  }
+
   function draw(t) {
     ctx.clearRect(0, 0, w, h);
     ctx.globalCompositeOperation = 'lighter';
+    drawBolts();
     for (const p of particles) {
       const x = p.x + Math.sin(t * p.swaySpeed + p.phase) * p.sway;
       const a = p.alpha * (0.75 + 0.25 * Math.sin(t * p.twinkle + p.phase));
@@ -294,6 +364,14 @@ Siga-nos no TikTok
       p.y += p.speed * dt;
       if (p.y > h + 20) particles[i] = createParticle(false);
     }
+    nextBolt -= dt;
+    if (nextBolt <= 0) {
+      bolts.push(createBolt());
+      // occasionally a quick second strike
+      nextBolt = Math.random() < 0.25 ? 0.25 : 5 + Math.random() * 9;
+    }
+    for (const b of bolts) b.age += dt;
+    bolts = bolts.filter(b => b.age < b.life);
     draw(t);
     requestAnimationFrame(frame);
   }
