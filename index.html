@@ -368,7 +368,7 @@ Siga-nos no TikTok
     if (nextBolt <= 0) {
       bolts.push(createBolt());
       // occasionally a quick second strike
-      nextBolt = Math.random() < 0.25 ? 0.25 : 5 + Math.random() * 9;
+      nextBolt = Math.random() < 0.25 ? 0.25 : 5 + Math.random() * 3;
     }
     for (const b of bolts) b.age += dt;
     bolts = bolts.filter(b => b.age < b.life);
