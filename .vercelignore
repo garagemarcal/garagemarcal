@@ -1,0 +1,6 @@
+.claude
+index.original.html
+.gitignore
+.vercelignore
+.env*
+.vercel

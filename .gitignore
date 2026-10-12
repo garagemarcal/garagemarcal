@@ -1,2 +1,5 @@
 .claude/
 index.original.html
+.vercel/
+.vercel
+.env*
