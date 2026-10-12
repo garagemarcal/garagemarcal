@@ -5,7 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Garage Marçal</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
 *{
@@ -17,53 +19,57 @@ font-family:Montserrat,sans-serif;
 
 body{
 min-height:100vh;
-background:radial-gradient(circle at top,#180020 0%,#000000 50%);
+background:
+  radial-gradient(ellipse 80% 45% at 50% 0%,rgba(200,16,30,.16) 0%,transparent 70%),
+  radial-gradient(circle at 50% 30%,#0d0d10 0%,#000 65%);
 color:white;
 display:flex;
 justify-content:center;
-overflow:hidden;
+overflow-x:hidden;
 position:relative;
 }
 
-.stars{
-position:absolute;
+#particles{
+position:fixed;
+inset:0;
 width:100%;
 height:100%;
-overflow:hidden;
-}
-
-.stars span{
-position:absolute;
-width:3px;
-height:3px;
-background:white;
-border-radius:50%;
-opacity:.7;
-animation:snow 12s linear infinite;
-}
-
-@keyframes snow{
-from{
-transform:translateY(-100px);
-}
-to{
-transform:translateY(100vh);
-}
+pointer-events:none;
 }
 
 .container{
 width:92%;
 max-width:380px;
 text-align:center;
-padding-top:35px;
+padding:56px 0 35px;
 z-index:1;
 }
 
-.logo-img{
-width:100%;
-max-width:260px;
-filter:drop-shadow(0 0 30px rgba(255,255,255,1));
-margin-bottom:18px;
+.logo{
+margin-bottom:30px;
+line-height:.9;
+font-weight:900;
+text-transform:uppercase;
+user-select:none;
+}
+
+.logo span{
+display:block;
+}
+
+.logo .garage{
+font-size:56px;
+letter-spacing:.14em;
+margin-right:-.14em;
+color:#fff;
+}
+
+.logo .marcal{
+font-size:56px;
+letter-spacing:.14em;
+margin-right:-.14em;
+color:#e10600;
+text-shadow:0 0 28px rgba(225,6,0,.45);
 }
 
 .info p{
@@ -104,8 +110,7 @@ position:absolute;
 left:18px;
 width:20px;
 height:20px;
-object-fit:contain;
-filter:brightness(0) invert(1);
+fill:currentColor;
 }
 
 .footer{
@@ -113,27 +118,23 @@ margin-top:22px;
 color:rgba(255,255,255,.45);
 font-size:12px;
 }
+
+@media (max-width:360px){
+.logo .garage,.logo .marcal{font-size:46px;}
+}
 </style>
 </head>
 
 <body>
 
-<div class="stars">
-<span style="left:5%;animation-delay:0s"></span>
-<span style="left:15%;animation-delay:1s"></span>
-<span style="left:25%;animation-delay:2s"></span>
-<span style="left:35%;animation-delay:3s"></span>
-<span style="left:45%;animation-delay:4s"></span>
-<span style="left:55%;animation-delay:5s"></span>
-<span style="left:65%;animation-delay:6s"></span>
-<span style="left:75%;animation-delay:7s"></span>
-<span style="left:85%;animation-delay:8s"></span>
-<span style="left:95%;animation-delay:9s"></span>
-</div>
+<canvas id="particles" aria-hidden="true"></canvas>
 
 <div class="container">
 
-<img src="https://i.imgur.com/7xJ6UIE.png" class="logo-img" alt="Garage Marçal">
+<h1 class="logo" aria-label="Garage Marçal">
+<span class="garage">Garage</span>
+<span class="marcal">Marcal</span>
+</h1>
 
 <div class="info">
 <p><b>▸ Audi A3 Sportback ◂</b></p>
@@ -142,18 +143,18 @@ font-size:12px;
 
 <div class="buttons">
 
-<a class="btn" href="https://instagram.com/garagemarcal" target="_blank">
-<img class="icon" src="https://i.imgur.com/Cnl331z.png" alt="Instagram">
+<a class="btn" href="https://instagram.com/garagemarcal" target="_blank" rel="noopener">
+<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2c3.2 0 3.6 0 4.8.1 3.3.1 4.8 1.7 4.9 4.9.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 3.2-1.7 4.8-4.9 4.9-1.3.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-3.3-.1-4.8-1.7-4.9-4.9-.1-1.3-.1-1.6-.1-4.8s0-3.6.1-4.8C2.4 3.9 3.9 2.4 7.2 2.3c1.2-.1 1.6-.1 4.8-.1zM12 0C8.7 0 8.3 0 7.1.1 2.7.3.3 2.7.1 7.1 0 8.3 0 8.7 0 12s0 3.7.1 4.9c.2 4.4 2.6 6.8 7 7 1.2.1 1.6.1 4.9.1s3.7 0 4.9-.1c4.4-.2 6.8-2.6 7-7 .1-1.2.1-1.6.1-4.9s0-3.7-.1-4.9c-.2-4.4-2.6-6.8-7-7C15.7 0 15.3 0 12 0zm0 5.8a6.2 6.2 0 1 0 0 12.4 6.2 6.2 0 0 0 0-12.4zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.4-11.8a1.4 1.4 0 1 0 0 2.9 1.4 1.4 0 0 0 0-2.9z"/></svg>
 Confira nosso Instagram
 </a>
 
-<a class="btn" href="https://www.youtube.com/@richardmarcall" target="_blank">
-<img class="icon" src="https://i.imgur.com/b9E2Dtf.png" alt="YouTube">
+<a class="btn" href="https://www.youtube.com/@richardmarcall" target="_blank" rel="noopener">
+<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>
 Canal no YouTube
 </a>
 
-<a class="btn" href="https://www.tiktok.com/@garagemarcal" target="_blank">
-<img class="icon" src="https://i.imgur.com/moLocde.png" alt="TikTok">
+<a class="btn" href="https://www.tiktok.com/@garagemarcal" target="_blank" rel="noopener">
+<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19.6 6.7a4.8 4.8 0 0 1-3.8-4.2V2h-3.4v13.7a2.9 2.9 0 0 1-5.2 1.7 2.9 2.9 0 0 1 3.2-4.5V9.4a6.3 6.3 0 0 0-5.4 10.7 6.3 6.3 0 0 0 10.8-4.4V8.7a8.2 8.2 0 0 0 4.8 1.5V6.8a4.8 4.8 0 0 1-1-.1z"/></svg>
 Siga-nos no TikTok
 </a>
 
@@ -164,6 +165,106 @@ Siga-nos no TikTok
 </div>
 
 </div>
+
+<script>
+(() => {
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  let w, h, dpr, particles = [], sprites = {}, last = 0, running = true;
+
+  // Pre-rendered soft glow sprites (much cheaper than shadowBlur per frame)
+  function makeSprite(r, g, b) {
+    const size = 64;
+    const c = document.createElement('canvas');
+    c.width = c.height = size;
+    const x = c.getContext('2d');
+    const grad = x.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+    grad.addColorStop(0, `rgba(${r},${g},${b},1)`);
+    grad.addColorStop(0.25, `rgba(${r},${g},${b},.8)`);
+    grad.addColorStop(0.6, `rgba(${r},${g},${b},.15)`);
+    grad.addColorStop(1, `rgba(${r},${g},${b},0)`);
+    x.fillStyle = grad;
+    x.fillRect(0, 0, size, size);
+    return c;
+  }
+
+  sprites.white = makeSprite(255, 255, 255);
+  sprites.red = makeSprite(255, 40, 30);
+
+  // depth: 0 = far (small, slow, dim) ... 1 = near (big, fast, bright)
+  function createParticle(randomY) {
+    const depth = Math.pow(Math.random(), 1.8);
+    return {
+      x: Math.random() * w,
+      y: randomY ? Math.random() * h : -20,
+      depth,
+      size: 2 + depth * 9,
+      speed: 12 + depth * 55,
+      sway: 6 + depth * 18,
+      swaySpeed: 0.3 + Math.random() * 0.6,
+      phase: Math.random() * Math.PI * 2,
+      alpha: 0.15 + depth * 0.6,
+      twinkle: 0.5 + Math.random() * 1.5,
+      sprite: Math.random() < 0.12 ? sprites.red : sprites.white
+    };
+  }
+
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    w = window.innerWidth;
+    h = window.innerHeight;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    const target = Math.round(Math.min(140, Math.max(45, (w * h) / 9000)));
+    while (particles.length < target) particles.push(createParticle(true));
+    particles.length = target;
+  }
+
+  function draw(t) {
+    ctx.clearRect(0, 0, w, h);
+    ctx.globalCompositeOperation = 'lighter';
+    for (const p of particles) {
+      const x = p.x + Math.sin(t * p.swaySpeed + p.phase) * p.sway;
+      const a = p.alpha * (0.75 + 0.25 * Math.sin(t * p.twinkle + p.phase));
+      // fade in at top / out at bottom
+      const edge = Math.min(1, (p.y + 20) / 80, (h - p.y) / 120);
+      ctx.globalAlpha = Math.max(0, a * edge);
+      const s = p.size * 2;
+      ctx.drawImage(p.sprite, x - s / 2, p.y - s / 2, s, s);
+    }
+    ctx.globalAlpha = 1;
+    ctx.globalCompositeOperation = 'source-over';
+  }
+
+  function frame(now) {
+    if (!running) return;
+    const t = now / 1000;
+    const dt = Math.min(0.05, last ? t - last : 0);
+    last = t;
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+      p.y += p.speed * dt;
+      if (p.y > h + 20) particles[i] = createParticle(false);
+    }
+    draw(t);
+    requestAnimationFrame(frame);
+  }
+
+  window.addEventListener('resize', resize);
+  document.addEventListener('visibilitychange', () => {
+    running = !document.hidden;
+    if (running && !reduceMotion) { last = 0; requestAnimationFrame(frame); }
+  });
+
+  resize();
+  if (reduceMotion) draw(0);
+  else requestAnimationFrame(frame);
+})();
+</script>
 
 </body>
 </html>
